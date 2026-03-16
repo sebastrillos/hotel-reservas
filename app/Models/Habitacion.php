@@ -15,7 +15,7 @@ class Habitacion extends Model
 
     public function tipo()
     {
-        return $this->belongsTo(TipoHabitacion::class, 'tipo_id');
+        return $this->belongsTo(TipoHabitacion::class);
     }
 
     public function reservas()

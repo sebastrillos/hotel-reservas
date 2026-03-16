@@ -14,12 +14,12 @@ class Reserva extends Model
 
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class, 'cliente_id');
+        return $this->belongsTo(Cliente::class);
     }
 
     public function habitacion()
     {
-        return $this->belongsTo(Habitacion::class, 'habitacion_id');
+        return $this->belongsTo(Habitacion::class);
     }
 
     public function cancelacion()

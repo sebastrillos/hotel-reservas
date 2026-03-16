@@ -15,6 +15,6 @@ class Pago extends Model
 
     public function reserva()
     {
-        return $this->belongsTo(Reserva::class, 'reserva_id');
+        return $this->belongsTo(Reserva::class);
     }
 }
