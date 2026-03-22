@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('cancelaciones', function (Blueprint $table) {
             $table->id();
             $table->foreignId('reserva_id')->constrained('reservas');
-            $table->foreignId('usuario_id')->constrained('users');
             $table->string('motivo');
             $table->dateTime('fecha_cancelacion');
             $table->timestamps();
