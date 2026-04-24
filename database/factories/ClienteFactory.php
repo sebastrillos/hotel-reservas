@@ -17,7 +17,6 @@ class ClienteFactory extends Factory
             'nombre' => $this->faker->name(),
             'direccion' => $this->faker->address(),
             'email' => $this->faker->unique()->safeEmail(),
-            'password' => Hash::make('password'), // 🔥 obligatorio
             'documento' => $this->faker->unique()->numerify('##########'),
             'telefono' => $this->faker->phoneNumber(),
             'estado' => $this->faker->randomElement(['activo', 'inactivo']),
