@@ -12,7 +12,7 @@ class CancelacionController extends Controller
      */
     public function index()
     {
-        //
+        return view('cancelaciones.index');
     }
 
     /**
