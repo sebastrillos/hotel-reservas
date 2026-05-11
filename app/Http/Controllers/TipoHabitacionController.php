@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TipoHabitacion;
+use App\Exceptions\ResourceNotFoundHttpException;
 
 
 class TipoHabitacionController extends Controller
@@ -66,7 +67,36 @@ class TipoHabitacionController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
-    {
-        //
+{
+    $tipo = TipoHabitacion::findOrFail($id);
+
+    $tipo->delete();
+
+    return redirect()->route('tipohabitaciones.index')
+        ->with('success', 'Tipo eliminado correctamente');
+}
+
+public function cambiarEstado($id)
+{
+    $tipo = TipoHabitacion::findOrFail($id);
+
+    $tipo->estado = !$tipo->estado;
+
+    $tipo->save();
+
+    return redirect()->back();
+}
+
+
+
+public function getRoom($id)
+{
+    $room = Room::find($id);
+
+    if (!$room) {
+        throw new ResourceNotFoundHttpException("La habitación con ID $id no existe en la base de datos.");
     }
+
+    return view('rooms.details', compact('room'));
+}
 }

@@ -15,4 +15,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource("cancelaciones", \App\Http\Controllers\CancelacionController::class);
     Route::resource("pagos", \App\Http\Controllers\pagoController::class);
     Route::resource("reservaciones", \App\Http\Controllers\ReservaController::class);
+    Route::put('tipohabitaciones/{id}/estado',[App\Http\Controllers\TipoHabitacionController::class, 'cambiarEstado'])->name('tipohabitaciones.estado');
 });
