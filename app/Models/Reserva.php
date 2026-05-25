@@ -3,11 +3,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Cancelacion;
 
 class Reserva extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'reservas';
 
     protected $fillable = [
@@ -34,4 +35,12 @@ class Reserva extends Model
     {
         return $this->hasMany(Pago::class, 'reserva_id');
     }
+
+    public function cancelaciones()
+    {
+        return $this->hasMany(Cancelacion::class);
+    }
+
+
+
 }

@@ -2,64 +2,80 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Cancelacion;
 
 class CancelacionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('cancelaciones.index');
+        $cancelaciones = Cancelacion::all();
+
+        return view(
+            'cancelaciones.index',
+            compact('cancelaciones')
+        );
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $cancelacion = Cancelacion::findOrFail($id);
+
+        $cancelacion->delete();
+
+        return redirect()
+            ->route('cancelaciones.index')
+            ->with(
+                'success',
+                'Cancelación eliminada correctamente'
+            );
+    }
+
+    public function cambiarEstado($id)
+    {
+        $cancelacion = Cancelacion::findOrFail($id);
+
+        if($cancelacion->estado == 1)
+        {
+            $cancelacion->estado = 0;
+        }
+        else
+        {
+            $cancelacion->estado = 1;
+        }
+
+        $cancelacion->save();
+
+        return redirect()
+            ->route('cancelaciones.index')
+            ->with(
+                'success',
+                'Estado actualizado correctamente'
+            );
     }
 }

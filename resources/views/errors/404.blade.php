@@ -106,19 +106,19 @@
 @section('content')
 <div class="content-wrapper error-wrapper-custom">
     <div class="error-card-custom">
-        
+
         <div class="minecraft-hotel">
             <i class="fas fa-hotel hotel-icon"></i>
             <div class="sign-404">404</div>
         </div>
-        
+
         <h1 class="error-title-text">No encontramos lo que buscas...</h1>
-        
+
         <p class="error-desc-text">
             Es posible que el enlace esté roto o que la información haya sido movida a otra sección del sistema.
         </p>
 
-        <a href="{{ url('/') }}" class="btn-action-home">
+        <a href="{{ url('/home') }}" class="btn-action-home">
             <i class="fas fa-arrow-left mr-2"></i> Regresar al panel principal
         </a>
 

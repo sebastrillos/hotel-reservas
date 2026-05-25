@@ -142,5 +142,39 @@
 <script src="{{asset('backend/dist/js/delete-confirm.js')}}"></script>
 <!-- Selectors -->
 <script src="{{asset('backend/dist/js/selectors.js')}}"></script>
+@if(session('success'))
+
+<script>
+
+Swal.fire({
+
+    icon: 'success',
+    title: 'Éxito',
+    text: '{{ session('success') }}',
+
+    timer: 2500,
+    showConfirmButton: false
+
+});
+
+</script>
+
+@endif
+
+@if(session('error'))
+
+<script>
+
+Swal.fire({
+
+    icon: 'error',
+    title: 'Error',
+    text: '{{ session('error') }}'
+
+});
+
+</script>
+
+@endif
 @stack('scripts')
 </html>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TipoHabitacion;
 use App\Exceptions\ResourceNotFoundHttpException;
+use App\Models\Habitacion;
 
 
 class TipoHabitacionController extends Controller
@@ -42,9 +43,10 @@ class TipoHabitacionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $actividad = TipoHabitacion::with(['habitaciones'])->findOrFail($id);
+        return view('tipohabitaciones.show',compact('tipoHabitacion'));
     }
 
     /**
@@ -63,17 +65,35 @@ class TipoHabitacionController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+public function destroy($id)
 {
     $tipo = TipoHabitacion::findOrFail($id);
 
+    foreach ($tipo->habitaciones as $habitacion)
+    {
+        foreach ($habitacion->reservas as $reserva)
+        {
+            // Eliminar cancelaciones
+            $reserva->cancelaciones()->delete();
+
+            // Eliminar pagos
+            $reserva->pagos()->delete();
+
+            // Eliminar reserva
+            $reserva->delete();
+        }
+
+        // Eliminar habitación
+        $habitacion->delete();
+    }
+
+    // Eliminar tipo
     $tipo->delete();
 
-    return redirect()->route('tipohabitaciones.index')
-        ->with('success', 'Tipo eliminado correctamente');
+    return redirect()
+            ->route('tipohabitaciones.index')
+            ->with('success',
+            'Todos los registros relacionados fueron eliminados');
 }
 
 public function cambiarEstado($id)

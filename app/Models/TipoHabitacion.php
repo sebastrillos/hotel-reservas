@@ -12,11 +12,11 @@ class TipoHabitacion extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nombre', 'descripcion', 'precio_base', 'registradopor'
+        'nombre', 'descripcion', 'precio_base', 'registradopor', 'estado'
     ];
 
-    public function habitaciones()
-    {
-        return $this->hasMany(Habitacion::class, 'tipo_id');
-    }
+   public function habitaciones()
+{
+    return $this->hasMany(Habitacion::class, 'tipo_id');
+}   
 }

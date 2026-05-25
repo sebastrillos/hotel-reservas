@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Habitacion;
 
 class HabitacionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        return view('habitaciones.index');
+        $habitaciones = Habitacion::all();
+
+        return view('habitaciones.index', compact('habitaciones'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -58,8 +60,51 @@ class HabitacionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $habitacion = Habitacion::findOrFail($id);
+
+        foreach($habitacion->reservas as $reserva)
+        {
+            // Eliminar pagos
+            $reserva->pagos()->delete();
+
+            // Eliminar cancelaciones
+            $reserva->cancelaciones()->delete();
+
+            // Eliminar reserva
+            $reserva->delete();
+        }
+
+        // Eliminar habitación
+        $habitacion->delete();
+
+        return redirect()
+            ->route('habitaciones.index')
+            ->with(
+                'success',
+                'Habitación eliminada correctamente'
+            );
+    }
+
+    public function habitaciones()
+{
+    return $this->hasMany(Habitacion::class, 'tipo_id');
+}
+
+    public function cambiarEstado($id)
+    {
+        $habitacion = Habitacion::findOrFail($id);
+
+        $habitacion->estado = !$habitacion->estado;
+
+        $habitacion->save();
+
+        return redirect()
+            ->route('habitaciones.index')
+            ->with(
+                'success',
+                'Estado actualizado correctamente'
+            );
     }
 }

@@ -1,20 +1,36 @@
-$(document).ready(function() {
-    $(document).on('submit', '.delete-form', function(e) {
+$(document).on('submit', 'form', function(e)
+{
+    if($(this).find('.btn-danger').length > 0)
+    {
         e.preventDefault();
-        const form = this;
+
+        let form = this;
+
         Swal.fire({
-            title: '¿Estás seguro?',
-            text: 'Este registro se eliminará definitivamente',
+
+            title: '¿Eliminar registro?',
+            text: "Esta acción no se puede deshacer",
             icon: 'warning',
+
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Aceptar',
-            cancelButtonText: 'Cancelar'
+
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+
+            background: '#fff',
+
+            reverseButtons: true
+
         }).then((result) => {
-            if (result.isConfirmed) {
+
+            if(result.isConfirmed)
+            {
                 form.submit();
             }
+
         });
-    });
+    }
 });

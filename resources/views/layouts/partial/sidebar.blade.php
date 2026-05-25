@@ -1,6 +1,6 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <a href="#" class="brand-link">
-        <img src="{{ asset('backend/dist/img/AdminLTELogo.png')}}" alt="Logo" style="opacity: .8; width:200px; height:70px;">
+        <img src="{{ asset('backend/dist/img/logo.jpg')}}" alt="Logo" style="opacity: .8; width:200px; height:70px;">
     </a>
     <div class="sidebar">
         <nav class="mt-2">
@@ -20,14 +20,14 @@
                     </a>
                     <ul class="nav nav-treeview">
 
-                        
+
                             <li class="nav-item">
                                 <a href="{{ route('tipohabitaciones.index') }}" class="nav-link">
                                     <i class="nav-icon fas fa-globe"></i>
                                     <p>Tipo Habitación</p>
                                 </a>
                             </li>
-                      
+
 
                             <li class="nav-item">
                                 <a href="{{ route('habitaciones.index') }}" class="nav-link">

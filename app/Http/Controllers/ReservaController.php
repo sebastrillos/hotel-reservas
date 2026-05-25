@@ -2,64 +2,87 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Reserva;
 
 class ReservaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('reservaciones.index');
+        $reservaciones = Reserva::with('cliente', 'habitacion')->get();
+
+        return view('reservaciones.index', compact('reservaciones'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $reserva = Reserva::findOrFail($id);
+
+        $reserva->pagos()->delete();
+
+        $reserva->cancelaciones()->delete();
+
+        $reserva->delete();
+
+        return redirect()
+            ->route('reservaciones.index')
+            ->with(
+                'success',
+                'Reserva eliminada correctamente'
+            );
+    }
+
+    public function cambiarEstado($id)
+    {
+        $reservacion = Reserva::findOrFail($id);
+
+        switch($reservacion->estado)
+        {
+            case 'pendiente':
+                $reservacion->estado = 'confirmada';
+                break;
+
+            case 'confirmada':
+                $reservacion->estado = 'cancelada';
+                break;
+
+            case 'cancelada':
+                $reservacion->estado = 'pendiente';
+                break;
+        }
+
+        $reservacion->save();
+
+        return redirect()
+            ->route('reservaciones.index')
+            ->with(
+                'success',
+                'Estado actualizado correctamente'
+            );
     }
 }

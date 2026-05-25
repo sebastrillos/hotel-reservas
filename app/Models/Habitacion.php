@@ -1,13 +1,15 @@
 <?php
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Reserva;
 
 class Habitacion extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'habitaciones';
     public $timestamps = false;
 
@@ -25,4 +27,6 @@ class Habitacion extends Model
     {
         return $this->hasMany(Reserva::class, 'habitacion_id');
     }
+
+
 }
