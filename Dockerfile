@@ -18,5 +18,5 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 # Ejecutar comandos de optimización de Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Dar permisos correctos a las carpetas de almacenamiento
-RUN chown -R nwuser:nwuser /var/www/html/storage /var/www/html/bootstrap/cache
+# 4. DAR PERMISOS CON EL USUARIO CORRECTO (www-data)
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
