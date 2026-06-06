@@ -3,20 +3,20 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    {{-- Esto tomará el nombre que definas en el archivo .env en APP_NAME --}}
+    <title>{{ config('app.name', 'Sistema Hotelero') }}</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        /* 🎨 Fondo original con animación */
+        /* 🎨 Fondo elegante con animación fluida (Azul Marino y Onyx Corporativo) */
         body {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
             background-size: 400% 400%;
-            animation: gradientMove 10s ease infinite;
+            animation: gradientMove 12s ease infinite;
             min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         @keyframes gradientMove {
@@ -25,11 +25,10 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Animación de entrada */
         .fade-in {
             opacity: 0;
             transform: translateY(20px);
-            animation: fadeInUp 1s ease forwards;
+            animation: fadeInUp 0.8s ease forwards;
         }
 
         @keyframes fadeInUp {
@@ -40,46 +39,51 @@
         }
 
         .card-hover {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.95) !important;
         }
         .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 1rem 2rem rgba(0,0,0,0.15) !important;
+            transform: translateY(-6px);
+            box-shadow: 0 1rem 2.5rem rgba(0,0,0,0.3) !important;
         }
 
         .logo-circle {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #2c5364, #203a43);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
 <body>
 
-<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-transparent py-3 fade-in">
     <div class="container">
-        <a class="navbar-brand fw-bold fs-4" href="#">
-            <i class="bi bi-box-seam me-2"></i>{{ config('app.name', 'Laravel') }}
+        <a class="navbar-brand fw-bold fs-4 text-white" href="#">
+            <i class="bi bi-building-fill text-warning me-2"></i>
+            {{-- Cambia aquí si quieres escribir el nombre directamente, ej: "Hotel Colonial" --}}
+            {{ config('app.name', 'Hotel Intranet') }}
         </a>
 
         @if (Route::has('login'))
             <div class="d-flex gap-2">
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="btn btn-light">
-                        <i class="bi bi-speedometer2 me-1"></i> Panel
+                    {{-- Redirección al Panel de Control que usa tu Sidebar --}}
+                    <a href="{{ url('/home') }}" class="btn btn-light fw-semibold shadow-sm">
+                        <i class="bi bi-th-large me-1"></i> Panel de Control
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-outline-light">
-                        <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
+                    <a href="{{ route('login') }}" class="btn btn-outline-light px-4">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Gestionar Sistema
                     </a>
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="btn btn-light">
-                            <i class="bi bi-person-plus me-1"></i> Registrarse
+                        <a href="{{ route('register') }}" class="btn btn-warning text-dark fw-semibold shadow-sm px-3">
+                            <i class="bi bi-person-plus-fill me-1"></i> Registrar Staff
                         </a>
                     @endif
                 @endauth
@@ -88,76 +92,73 @@
     </div>
 </nav>
 
-<!-- Hero Section -->
 <div class="container py-5 text-center text-white fade-in">
     <div class="d-flex justify-content-center mb-4">
-        <div class="logo-circle shadow-lg">
-            <i class="bi bi-lightning-charge-fill text-white fs-2"></i>
+        <div class="logo-circle shadow-lg text-warning animate-bounce">
+            <i class="bi bi-concierge-bell fs-1"></i>
         </div>
     </div>
 
-    <h1 class="display-4 fw-bold mb-3">Comencemos</h1>
-
-    <p class="lead mb-5 opacity-75">
-        Laravel tiene un ecosistema increíblemente completo.<br>
-        Te sugerimos comenzar con lo siguiente.
+    <h1 class="display-4 fw-bold mb-3">Plataforma de Gestión Operativa</h1>
+    <p class="lead mb-5 opacity-75 max-w-xl mx-auto">
+        Bienvenido a la terminal central de operaciones de <strong>{{ config('app.name', 'nuestro Hotel') }}</strong>.<br>
+        Administra reservas, habitaciones, huéspedes y auditorías de caja en tiempo real.
     </p>
 
-    <!-- Cards -->
-    <div class="row g-4 justify-content-center fade-in">
+    <div class="row g-4 justify-content-center fade-in" style="animation-delay: 0.2s;">
 
         <div class="col-md-4">
-            <div class="card h-100 border-0 shadow card-hover">
+            <div class="card h-100 border-0 shadow-lg card-hover">
                 <div class="card-body p-4 text-start">
                     <div class="mb-3">
-                        <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
-                            <i class="bi bi-book fs-4"></i>
+                        <span class="badge bg-primary bg-opacity-10 text-primary p-3 rounded-3">
+                            <i class="bi bi-calendar-check fs-3"></i>
                         </span>
                     </div>
-                    <h5 class="card-title fw-semibold">Documentación</h5>
-                    <p class="card-text text-muted">
-                        Laravel tiene una documentación excelente que cubre todos los aspectos del framework.
+                    <h5 class="card-title fw-bold text-dark">Libro de Reservaciones</h5>
+                    <p class="card-text text-muted small">
+                        Ingresa nuevas estancias, gestiona asignaciones de habitaciones, fechas de check-in / check-out y estados de confirmación.
                     </p>
-                    <a href="https://laravel.com/docs" target="_blank" class="btn btn-primary btn-sm">
-                        Leer documentación <i class="bi bi-arrow-right ms-1"></i>
+                    <a href="{{ route('reservaciones.index') }}" class="btn btn-primary btn-sm w-100 py-2 mt-2 fw-semibold">
+                        Abrir Reservas <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
             </div>
         </div>
 
         <div class="col-md-4">
-            <div class="card h-100 border-0 shadow card-hover">
+            <div class="card h-100 border-0 shadow-lg card-hover">
                 <div class="card-body p-4 text-start">
                     <div class="mb-3">
-                        <span class="badge bg-danger bg-opacity-10 text-danger p-2 rounded-3">
-                            <i class="bi bi-play-circle fs-4"></i>
+                        <span class="badge bg-success bg-opacity-10 text-success p-3 rounded-3">
+                            <i class="bi bi-door-closed fs-3"></i>
                         </span>
                     </div>
-                    <h5 class="card-title fw-semibold">Tutoriales</h5>
-                    <p class="card-text text-muted">
-                        Mira miles de tutoriales en video sobre Laravel, PHP y JavaScript.
+                    <h5 class="card-title fw-bold text-dark">Control de Habitaciones</h5>
+                    <p class="card-text text-muted small">
+                        Monitorea el inventario físico, pisos, capacidades y actualiza la disponibilidad inmediata (Disponible / Ocupado).
                     </p>
-                    <a href="https://laracasts.com" target="_blank" class="btn btn-danger btn-sm">
-                        Ver tutoriales <i class="bi bi-arrow-right ms-1"></i>
+                    <a href="{{ route('habitaciones.index') }}" class="btn btn-success btn-sm w-100 py-2 mt-2 fw-semibold">
+                        Ver Habitaciones <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
             </div>
         </div>
 
         <div class="col-md-4">
-            <div class="card h-100 border-0 shadow card-hover">
+            <div class="card h-100 border-0 shadow-lg card-hover">
                 <div class="card-body p-4 text-start">
                     <div class="mb-3">
-                        <span class="badge bg-success bg-opacity-10 text-success p-2 rounded-3">
-                            <i class="bi bi-cloud-upload fs-4"></i>
+                        <span class="badge bg-secondary bg-opacity-10 text-dark p-3 rounded-3">
+                            <i class="bi bi-people-fill fs-3"></i>
                         </span>
                     </div>
-                    <h5 class="card-title fw-semibold">Desplegar ahora</h5>
-                    <p class="card-text text-muted">
-                        Despliega tu aplicación en la nube con Laravel Cloud o Forge.
+                    <h5 class="card-title fw-bold text-dark">Padrón de Huéspedes</h5>
+                    <p class="card-text text-muted small">
+                        Accede al historial y base de datos de clientes, documentos de identidad, teléfonos y correos electrónicos de contacto.
                     </p>
-                    <a href="https://cloud.laravel.com" target="_blank" class="btn btn-success btn-sm">
-                        Desplegar <i class="bi bi-arrow-right ms-1"></i>
+                    <a href="{{ route('clientes.index') }}" class="btn btn-secondary btn-sm w-100 py-2 mt-2 fw-semibold text-white">
+                        Expediente de Clientes <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
             </div>
@@ -166,10 +167,9 @@
     </div>
 </div>
 
-<!-- Footer -->
-<footer class="text-center text-white py-4 opacity-75 fade-in">
+<footer class="text-center text-white py-4 opacity-50 fade-in" style="animation-delay: 0.4s;">
     <small>
-        Laravel v{{ Illuminate\Foundation\Application::VERSION }} · PHP v{{ PHP_VERSION }}
+        &copy; {{ date('Y') }} {{ config('app.name', 'Hotel Engine') }} · Terminal Administrativa Privada · v1.0
     </small>
 </footer>
 

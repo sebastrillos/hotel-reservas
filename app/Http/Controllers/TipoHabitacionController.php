@@ -5,27 +5,20 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TipoHabitacion;
-use App\Exceptions\ResourceNotFoundHttpException;
-use App\Models\Habitacion;
-
 
 class TipoHabitacionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra la lista de todos los tipos de habitaciones.
      */
     public function index()
     {
-        // 1. Obtener todos los tipos de habitaciones de la DB
-        // Asegúrate de importar el modelo arriba: use App\Models\TipoHabitacion;
-        $tipos = \App\Models\TipoHabitacion::all();
-
-        // 2. Pasar la variable a la vista
+        $tipos = TipoHabitacion::all();
         return view('tipohabitaciones.index', compact('tipos'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear un nuevo tipo.
      */
     public function create()
     {
@@ -33,90 +26,107 @@ class TipoHabitacionController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guarda el nuevo registro en la base de datos con validación.
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|max:100|unique:tipo_habitacion,nombre',
+            'descripcion' => 'nullable|string',
+            'precio_base' => 'required|numeric|min:0',
+        ]);
+
+        TipoHabitacion::create([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'precio_base' => $request->precio_base,
+            'estado' => 1, // Activo por defecto
+            'registradopor' => auth()->user()->name ?? 'Sistema'
+        ]);
+
+        return redirect()->route('tipohabitaciones.index')
+            ->with('success', 'Tipo de habitación creado exitosamente.');
     }
 
     /**
-     * Display the specified resource.
+     * Muestra los detalles de un tipo específico y sus habitaciones relacionadas.
      */
     public function show($id)
     {
-        $actividad = TipoHabitacion::with(['habitaciones'])->findOrFail($id);
-        return view('tipohabitaciones.show',compact('tipoHabitacion'));
+        // 1. Buscamos el tipo de habitación por su ID real y cargamos sus habitaciones correspondientes
+        $tipoHabitacion = TipoHabitacion::with(['habitaciones'])->findOrFail($id);
+
+        // 2. Lo pasamos a la vista con el nombre de variable correcto
+        return view('tipohabitaciones.index', compact('tipoHabitacion'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Muestra el formulario para editar el registro.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $tipoHabitacion = TipoHabitacion::findOrFail($id);
+        return view('tipohabitaciones.edit', compact('tipoHabitacion'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza el registro en la base de datos.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        // 1. Validar los datos que vienen del formulario
+        $request->validate([
+            'nombre'      => 'required|string|max:255',
+            'precio_base' => 'required|numeric|min:0',
+            'descripcion' => 'nullable|string',
+        ]);
+
+        // 2. Buscar el registro real en la base de datos
+        $tipoHabitacion = TipoHabitacion::findOrFail($id);
+
+        // 3. Actualizar explícitamente TODOS los campos en la base de datos
+        $tipoHabitacion->update([
+            'nombre'      => $request->nombre,
+            'precio_base' => $request->precio_base,
+            'descripcion' => $request->descripcion,
+        ]);
+
+        // 4. Redireccionar al usuario con un mensaje de éxito
+        return redirect()->route('tipohabitaciones.index')
+            ->with('success', 'El tipo de habitación se actualizó correctamente con todos sus datos.');
     }
 
-public function destroy($id)
-{
-    $tipo = TipoHabitacion::findOrFail($id);
-
-    foreach ($tipo->habitaciones as $habitacion)
+    /**
+     * Elimina el registro y todo lo relacionado en cascada para evitar fallos de integridad.
+     */
+    public function destroy($id)
     {
-        foreach ($habitacion->reservas as $reserva)
-        {
-            // Eliminar cancelaciones
-            $reserva->cancelaciones()->delete();
+        $tipo = TipoHabitacion::findOrFail($id);
 
-            // Eliminar pagos
-            $reserva->pagos()->delete();
-
-            // Eliminar reserva
-            $reserva->delete();
+        foreach ($tipo->habitaciones as $habitacion) {
+            foreach ($habitacion->reservas as $reserva) {
+                $reserva->cancelaciones()->delete();
+                $reserva->pagos()->delete();
+                $reserva->delete();
+            }
+            $habitacion->delete();
         }
 
-        // Eliminar habitación
-        $habitacion->delete();
+        $tipo->delete();
+
+        return redirect()->route('tipohabitaciones.index')
+            ->with('success', 'Todos los registros relacionados fueron eliminados correctamente.');
     }
 
-    // Eliminar tipo
-    $tipo->delete();
+    /**
+     * Cambia el estado lógico (Activo/Inactivo).
+     */
+    public function cambiarEstado($id)
+    {
+        $tipo = TipoHabitacion::findOrFail($id);
+        $tipo->estado = !$tipo->estado;
+        $tipo->save();
 
-    return redirect()
-            ->route('tipohabitaciones.index')
-            ->with('success',
-            'Todos los registros relacionados fueron eliminados');
-}
-
-public function cambiarEstado($id)
-{
-    $tipo = TipoHabitacion::findOrFail($id);
-
-    $tipo->estado = !$tipo->estado;
-
-    $tipo->save();
-
-    return redirect()->back();
-}
-
-
-
-public function getRoom($id)
-{
-    $room = Room::find($id);
-
-    if (!$room) {
-        throw new ResourceNotFoundHttpException("La habitación con ID $id no existe en la base de datos.");
+        return redirect()->back()->with('success', 'Estado modificado correctamente.');
     }
-
-    return view('rooms.details', compact('room'));
-}
 }
